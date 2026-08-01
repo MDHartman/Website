@@ -75,6 +75,22 @@
   .nav-links a:hover{ color:var(--ink); }
   .nav-links a:hover::after{ transform:scaleX(1); }
 
+  /* hamburger (hidden on desktop) */
+  .menu-btn{
+    display:none; background:none; border:1px solid var(--line); border-radius:8px;
+    width:40px; height:36px; cursor:pointer; padding:0;
+    align-items:center; justify-content:center; flex-direction:column; gap:5px;
+    transition:border-color .25s var(--ease);
+  }
+  .menu-btn span{
+    display:block; width:18px; height:2px; background:var(--ink); border-radius:2px;
+    transition:transform .3s var(--ease), opacity .3s var(--ease);
+  }
+  .menu-btn:hover{ border-color:var(--accent); }
+  .menu-btn[aria-expanded="true"] span:nth-child(1){ transform:translateY(7px) rotate(45deg); }
+  .menu-btn[aria-expanded="true"] span:nth-child(2){ opacity:0; }
+  .menu-btn[aria-expanded="true"] span:nth-child(3){ transform:translateY(-7px) rotate(-45deg); }
+
   /* ---------- Hero ---------- */
   header{
     position:relative; overflow:hidden;
@@ -272,12 +288,29 @@
 
   /* ---------- Responsive ---------- */
   @media (max-width:760px){
-    .nav-links{ gap:16px; }
-    .nav-links li:nth-child(n+4){ display:none; }
-    .hero{ padding:72px 0 64px; }
+    .menu-btn{ display:flex; }
+    .nav-links{
+      position:absolute; top:100%; left:0; right:0;
+      flex-direction:column; gap:0;
+      background:var(--paper); border-bottom:1px solid var(--line);
+      max-height:0; overflow:hidden;
+      transition:max-height .35s var(--ease);
+    }
+    .nav-links.open{ max-height:320px; }
+    .nav-links a{
+      display:block; padding:14px 24px; font-size:16px;
+      border-top:1px solid var(--line);
+    }
+    .nav-links a::after{ display:none; }
+    .hero{ padding:64px 0 56px; }
+    h1{ font-size:clamp(36px, 11vw, 48px); }
+    h1 em{ white-space:normal; }
+    h1 em .underline{ display:none; }
+    .hero p.lede{ font-size:17px; }
     .post{ grid-template-columns:1fr; gap:4px; }
     .post .tag{ justify-self:start; }
     .music-grid{ grid-template-columns:1fr; }
+    .quote-dots{ margin-top:220px; }
   }
 
   /* ---------- Reduced motion ---------- */
@@ -291,9 +324,12 @@
 <body>
 
 <nav>
-  <div class="nav-inner">
+  <div class="nav-inner" style="position:relative">
     <a class="brand" href="#top">MIKE<b>.LEDGER</b></a>
-    <ul class="nav-links">
+    <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="navLinks" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links" id="navLinks">
       <li><a href="#writing">Writing</a></li>
       <li><a href="#spreadsheets">Spreadsheets</a></li>
       <li><a href="#music">Music</a></li>
@@ -460,6 +496,19 @@
   function startIntro(){ document.body.classList.add('loaded'); }
   requestAnimationFrame(() => requestAnimationFrame(startIntro));
   setTimeout(startIntro, 800);
+
+  // Mobile menu
+  const menuBtn = document.getElementById('menuBtn');
+  const navLinks = document.getElementById('navLinks');
+  menuBtn.addEventListener('click', () => {
+    const open = navLinks.classList.toggle('open');
+    menuBtn.setAttribute('aria-expanded', open);
+    menuBtn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+  });
+  navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+    navLinks.classList.remove('open');
+    menuBtn.setAttribute('aria-expanded', 'false');
+  }));
 
   // Scroll reveals
   const io = new IntersectionObserver((entries) => {
