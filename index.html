@@ -455,8 +455,11 @@
 </footer>
 
 <script>
-  // Page-load stagger
-  window.addEventListener('load', () => document.body.classList.add('loaded'));
+  // Page-load stagger — trigger as soon as the page is interactive,
+  // with a safety fallback so the hero can never stay hidden
+  function startIntro(){ document.body.classList.add('loaded'); }
+  requestAnimationFrame(() => requestAnimationFrame(startIntro));
+  setTimeout(startIntro, 800);
 
   // Scroll reveals
   const io = new IntersectionObserver((entries) => {
