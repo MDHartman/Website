@@ -1,0 +1,14 @@
+{
+  "name": "Quotes",
+  "short_name": "Quotes",
+  "start_url": "/quotes/",
+  "scope": "/quotes/",
+  "display": "standalone",
+  "background_color": "#121212",
+  "theme_color": "#121212",
+  "icons": [
+    { "src": "/quotes/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/quotes/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/quotes/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
